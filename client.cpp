@@ -94,7 +94,7 @@ void Client::nextPage() {
 
 void Client::readsimp(const char * filepath){
     //int token;
-    std::cout<<filepath <<std::endl;
+    //std::cout<<filepath <<std::endl;
     std::ifstream simpfile;
     //char* simpname = "testfile.simp";
     simpfile.open(filepath, std::ifstream::in);
@@ -111,7 +111,7 @@ void Client::readsimp(const char * filepath){
         //std::cout<<"in while loop" <<std::endl;
         linecount = line.length();
         //std::cout<<linecount <<std::endl;
-        //======================LOGIC=======================//
+        //======================WORD DETECTION=======================//
 
         //1. Define StringSearch
         //Use find to see if the substring is in the main string. Returns position if found
@@ -126,7 +126,7 @@ void Client::readsimp(const char * filepath){
         std::size_t findPhongstring = line.find("phong");
         std::size_t findGouraudstring = line.find("gouraud");
         std::size_t findFlatstring = line.find("flat");
-        //====================END LOGIC=====================//
+        //=======================END DETECTION=======================//
 
         if (findCamerastring !=std::string::npos){
             //find camera values
@@ -139,7 +139,7 @@ void Client::readsimp(const char * filepath){
             float x1, y1, z1, r1,g1,b1;
             float x2, y2, z2, r2,g2,b2;
             std::string newstring=line.substr(findLinestring+5,linecount);
-            std::cout<< newstring <<std::endl;
+           // std::cout<< newstring <<std::endl;
             char * cnewstring = new char[newstring.length()+1];
             std::strcpy (cnewstring, newstring.c_str());
             char *token = std::strtok(cnewstring, " (),");
@@ -186,9 +186,9 @@ void Client::readsimp(const char * filepath){
                 }
 
             }
-            std::cout<<x1 << " " << y1 << " " << z1 << " " << r1 << " " << g1 << " " << b1 <<std::endl;
-            std::cout<<x2 << " " << y2 << " " << z2 << " " << r2 << " " << g2 << " " << b2 <<std::endl;
-            draw_lineBres(x1,y1,x2,y2,r1,g1,b1,r2,g2, b2);
+            //std::cout<<x1 << " " << y1 << " " << z1 << " " << r1 << " " << g1 << " " << b1 <<std::endl;
+            //std::cout<<x2 << " " << y2 << " " << z2 << " " << r2 << " " << g2 << " " << b2 <<std::endl;
+            draw_lineBres(x1,y1,z1, x2,y2,z2,r1,g1,b1,r2,g2, b2);
         }
 
         if (findPolygonstring != std::string::npos){
@@ -262,8 +262,9 @@ void Client::readsimp(const char * filepath){
                     b2 = atof(token);
                 }
             }
-            drawTriangleBresVersion2(x0, y0,x1, y1, x2, y2, r0, g0, b0, r1, g1, b1, r2, g2, b2);
+            drawTriangleBresVersion2(x0, y0,z0,x1, y1,z1, x2, y2,z2, r0, g0, b0, r1, g1, b1, r2, g2, b2);
         }
+
         if (findMeshstring !=std::string::npos){
             //Open Mesh File
         }
@@ -345,7 +346,7 @@ void Client::wiremesh(const int p1x, const int p1y, const int p2x, const int p2y
                 else{
                     int yrand = rand()%25 +(-12);
                     ycoords[x][y] = p1x + y*dx + yrand;
-                }
+                }  
             }
     }
     for( int y = 0; y<10; y++){ //plot lines for each x and y that was generated
@@ -361,7 +362,7 @@ void Client::wiremesh(const int p1x, const int p1y, const int p2x, const int p2y
             int p1y = ycoords[x][y];
             int p2x =  xcoords[x+1][y+1];
             int p2y = ycoords[x+1][y+1];
-            draw_lineBres(p1x, p1y, p2x, p2y, r1, g1, b1,r2,g2 , b2);
+            draw_lineBres(p1x, p1y, 0, p2x, p2y, 0, r1, g1, b1,r2,g2 , b2);
 
             //horizontal lines
             unsigned int r3 = rand() % 256;
@@ -374,7 +375,7 @@ void Client::wiremesh(const int p1x, const int p1y, const int p2x, const int p2y
             int p3y = ycoords[x][y];
             int p4x =  xcoords[x+1][y];
             int p4y = ycoords[x+1][y];
-            draw_lineBres(p3x, p3y, p4x, p4y,  r3, g3, b3,r4,g4 , b4);
+            draw_lineBres(p3x, p3y,0, p4x, p4y, 0,  r3, g3, b3,r4,g4 , b4);
 
            //vertical lines
             unsigned int r5 = rand() % 256;
@@ -387,7 +388,7 @@ void Client::wiremesh(const int p1x, const int p1y, const int p2x, const int p2y
            int p5y = ycoords[x][y];
            int p6x =  xcoords[x][y+1];
            int p6y = ycoords[x][y+1];
-           draw_lineBres(p5x, p5y, p6x, p6y, r5, g5, b5,r6,g6 , b6);
+           draw_lineBres(p5x, p5y,0, p6x, p6y,0, r5, g5, b5,r6,g6 , b6);
 
 
        }
@@ -430,9 +431,9 @@ void Client::filledinmesh(const int p1x, const int p1y, const int p2x, const int
     for( int y = 0; y<10; y++){ //plot lines for each x and y that was generated
        for (int x=0; x<10; x++){
 
-           drawTriangleBresVersion2( xcoords[x][y],  ycoords[x][y],  xcoords[x+1][y],  ycoords[x+1][y], xcoords[x+1][y+1], ycoords[x+1][y+1], r[x][y],g[x][y],b[x][y], r[x+1][y],g[x+1][y],b[x+1][y], r[x+1][y+1],g[x+1][y+1],b[x+1][y+1]);
+           drawTriangleBresVersion2( xcoords[x][y],  ycoords[x][y],0,  xcoords[x+1][y],  ycoords[x+1][y],0, xcoords[x+1][y+1], ycoords[x+1][y+1],0, r[x][y],g[x][y],b[x][y], r[x+1][y],g[x+1][y],b[x+1][y], r[x+1][y+1],g[x+1][y+1],b[x+1][y+1]);
 
-           drawTriangleBresVersion2( xcoords[x][y],  ycoords[x][y],  xcoords[x][y+1],  ycoords[x][y+1], xcoords[x+1][y+1], ycoords[x+1][y+1], r[x][y],g[x][y],b[x][y], r[x][y+1],g[x][y+1],b[x][y+1], r[x+1][y+1],g[x+1][y+1],b[x+1][y+1]);
+           drawTriangleBresVersion2( xcoords[x][y],  ycoords[x][y],0,  xcoords[x][y+1],  ycoords[x][y+1],0, xcoords[x+1][y+1], ycoords[x+1][y+1],0, r[x][y],g[x][y],b[x][y], r[x][y+1],g[x][y+1],b[x][y+1], r[x+1][y+1],g[x+1][y+1],b[x+1][y+1]);
        }
     }
 }
@@ -531,7 +532,7 @@ void Client::draw_lineDDA(int x1, int y1, int x2, int y2, unsigned int color){
     }
 }
 
-void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsigned int gi, unsigned int bi,unsigned int rf, unsigned int gf, unsigned int bf){
+void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsigned int ri, unsigned int gi, unsigned int bi,unsigned int rf, unsigned int gf, unsigned int bf){
     double dx = abs(x2 - x1); //we just want to distance of dx and dy
     //std::cout << "dx = " << dx << std::endl;
     double dy = abs(y2 - y1);
@@ -544,15 +545,17 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
     double y =y1;
     double x = x1;
 
-
-    unsigned int r = ri;
-   // std::cout<<"ri = " <<r<< std::endl;
-    unsigned int g = gi;
-   // std::cout<<"gi = " <<gi<< std::endl;
-    unsigned int b = bi;
+    float z;
+    z=z1;
+    float zdiff = (1- (z/200));
+    unsigned int r = ri * zdiff;
+    //std::cout<<"ri = " <<r<< std::endl;
+    unsigned int g = gi * zdiff;
+    //std::cout<<"gi = " <<gi<< std::endl;
+    unsigned int b = bi * zdiff;
    // std::cout<<"bi = " <<bi<< std::endl;
     unsigned int color = (0xff << 24) + (r << 16) + (g << 8) + b;
-    //drawable->setPixel(x1, y1,color);
+    drawable->setPixel(x1, y1,color);
 
 
 
@@ -560,14 +563,25 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
         if(y2>y1){ //octant 2
             for(int y=y1+1; y<y2; y++){
                 if(x2 == x1){ //vertical line down
+                    float z;
+                    if (z1 != z2){
+                        z = lerp(z1,z2,y-y1,y2-y1);
+                    }
+                    else{
+                        z = z1;
+                    }
+                    float zdiff = (1- (z/200));
+                    //std::cout<<"z = " <<z<< std::endl;
+                    r=lerp(ri,rf,y-y1,y2-y1);
+                    g=lerp(gi,gf,y-y1,y2-y1);
+                    b=lerp(bi,bf,y-y1,y2-y1);
+                    r *=  zdiff;
+                    g *=  zdiff;
+                    b *=  zdiff;
+                    color = (0xff << 24) + (r << 16) + (g << 8) + b;
 
-                        r=lerp(ri,rf,y,y2);
-                        g=lerp(gi,gf,y,y2);
-                        b=lerp(bi,bf,y,y2);
-                        color = (0xff << 24) + (r << 16) + (g << 8) + b;
-
-                         //std::cout<<"color = " <<color<< std::endl;
-                         //drawable->setPixel(x1, y,color);
+                    //std::cout<<"color = " <<color<< std::endl;
+                    //drawable->setPixel(x1, y,color);
 
                 }
                 else if (error <= 0){
@@ -575,28 +589,61 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
                     if (x2>x1){
                         x++;
                         //std::cout<<"1"<<std::endl;
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,y-y1,y2-y1);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        float zdiff = (1- (z/200));
+                       // std::cout<<"z = " <<z<< std::endl;
                         r=lerp(ri,rf,y-y1,y2-y1);
                         g=lerp(gi,gf,y-y1,y2-y1);
                         b=lerp(bi,bf,y-y1,y2-y1);
+                        r *=  zdiff;
+                        g *=  zdiff;
+                        b *=  zdiff;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
                     else{
                         x--;
                         //std::cout<<"2"<<std::endl;
-
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,y-y1,y2-y1);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        float zdiff = (1- (z/200));
+                        std::cout<<"z = " <<z<< std::endl;
                         r=lerp(ri,rf,y-y1,y2-y1);
                         g=lerp(gi,gf,y-y1,y2-y1);
                         b=lerp(bi,bf,y-y1,y2-y1);
+                        r *=  zdiff;
+                        g *=  zdiff;
+                        b *=  zdiff;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
                 }
                 else{
                     error -=two_dx;
                     //std::cout<<"what1"<<std::endl;
-
+                    float z;
+                    if (z1 != z2){
+                        z = lerp(z1,z2,y-y1,y2-y1);
+                    }
+                    else{
+                        z = z1;
+                    }
+                    float zdiff = (1- (z/200));
                     r=lerp(ri,rf,y-y1,y2-y1);
                     g=lerp(gi,gf,y-y1,y2-y1);
                     b=lerp(bi,bf,y-y1,y2-y1);
+                    r *=  zdiff;
+                    g *=  zdiff;
+                    b *=  zdiff;
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
 
@@ -611,29 +658,60 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
                     if (x2>=x1){
                         x++;
                         //std::cout<<"3"<<std::endl;
-
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,y1-y,y1-y2);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        float zdiff = (1- (z/200));
                         r=lerp(ri,rf,y1-y,y1-y2);
                         g=lerp(gi,gf,y1-y,y1-y2);
                         b=lerp(bi,bf,y1-y,y1-y2);
+                        r *=  zdiff;
+                        g *=  zdiff;
+                        b *=  zdiff;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
                     else{
                         x--;
                        //std::cout<<"4"<<std::endl;
-
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,y1-y,y1-y2);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        float zdiff = (1- (z/200));
                         r=lerp(ri,rf,y1-y,y1-y2);
                         g=lerp(gi,gf,y1-y,y1-y2);
                         b=lerp(bi,bf,y1-y,y1-y2);
+                        r *=  zdiff;
+                        g *=  zdiff;
+                        b *=  zdiff;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
                 }
                 else{
                     error -=two_dx;
                     //std::cout<<"what2"<<std::endl;
+                    float z;
+                    if (z1 != z2){
+                        z = lerp(z1,z2,y1-y,y1-y2);
+                    }
+                    else{
+                        z = z1;
+                    }
 
+                    float zdiff = (1- (z/200));
                     r=lerp(ri,rf,y1-y,y1-y2);
                     g=lerp(gi,gf,y1-y,y1-y2);
                     b=lerp(bi,bf,y1-y,y1-y2);
+                    r *=  zdiff;
+                    g *=  zdiff;
+                    b *=  zdiff;
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
                 drawable->setPixel(x, y,color);
@@ -645,9 +723,25 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
             for( int x=x1+1; x<x2; x++){
                 if(y2 == y1){ //horizontal line across
                         //std::cout<<"here"<<std::endl;
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,x-x1,x2-x1);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        std::cout<<"z = "<<z<<std::endl;
+                        float zdiff = (1- (z/200));
+                        std::cout<<"zdiff = "<<zdiff<<std::endl;
                         r=lerp(ri,rf,x-x1,x2-x1);
                         g=lerp(gi,gf,x-x1,x2-x1);
                         b=lerp(bi,bf,x-x1,x2-x1);
+                        r *=  zdiff;
+                        g *=  zdiff;
+                        b *=  zdiff;
+                        std::cout<<"r = "<<r<<std::endl;
+                        std::cout<<"g = "<<g<<std::endl;
+                        std::cout<<"b = "<<b<<std::endl;
                          color = (0xff << 24) + (r << 16) + (g << 8) + b;
 
                          //std::cout<<"color = " <<color<< std::endl;
@@ -659,23 +753,46 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
                     if (y2>y1){
                         y++;
                         //std::cout<<"5"<<std::endl;
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,x-x1,x2-x1);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        //std::cout<<"z = "<<z<<std::endl;
+                        float zdiff = (1- (z/200));
+                       // std::cout<<"zdiff = "<<zdiff<<std::endl;
                         r=lerp(ri,rf,x-x1,x2-x1);
-                        //std::cout<<"r = " <<r<< std::endl;
+                        r = r * zdiff;
+                       // std::cout<<"r = " <<r<< std::endl;
                         g=lerp(gi,gf,x-x1,x2-x1);
-                        //std::cout<<"g = " <<g<< std::endl;
+                        g *=  zdiff;
+                       // std::cout<<"g = " <<g<< std::endl;
                         b=lerp(bi,bf,x-x1,x2-x1);
-                        //std::cout<<"b = " <<b<< std::endl;
+                        b *=  zdiff;
+                       // std::cout<<"b = " <<b<< std::endl;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
                     else{
                         y--;
-                        //std::cout<<"6"<<std::endl;
-
+                       // std::cout<<"6"<<std::endl;
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,x-x1,x2-x1);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        float zdiff = (1- (z/200));
                         r=lerp(ri,rf,x-x1,x2-x1);
+                        r = r * zdiff;
                         //std::cout<<"r = " <<r<< std::endl;
                         g=lerp(gi,gf,x-x1,x2-x1);
+                        g *=  zdiff;
                         //std::cout<<"g = " <<g<< std::endl;
                         b=lerp(bi,bf,x-x1,x2-x1);
+                        b *=  zdiff;
                         //std::cout<<"b = " <<b<< std::endl;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
@@ -683,12 +800,22 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
                 else{
                     error +=two_dy;
                     //std::cout<<"what3"<<std::endl;
-
+                    float z;
+                    if (z1 != z2){
+                        z = lerp(z1,z2,x-x1,x2-x1);
+                    }
+                    else{
+                        z = z1;
+                    }
+                    float zdiff = (1- (z/200));
                     r=lerp(ri,rf,x-x1,x2-x1);
                     //std::cout<<"r = " <<r<< std::endl;
                     g=lerp(gi,gf,x-x1,x2-x1);
                     //std::cout<<"g = " <<g<< std::endl;
                     b=lerp(bi,bf,x-x1,x2-x1);
+                    r *=  zdiff;
+                    g *=  zdiff;
+                    b *=  zdiff;
                     //std::cout<<"b = " <<b<< std::endl;
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
@@ -702,38 +829,69 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
                     if (y2>=y1){
                         y++;
                         //std::cout<<"7"<<std::endl;
-
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,x1-x,x1-x2);
+                        }
+                        else{
+                            z = z1;
+                        }
+                         float zdiff = (1- (z/200));
                         r=lerp(ri,rf,x1-x,x1-x2);
                        // std::cout<<"r = " << r <<std::endl;
                         g=lerp(gi,gf,x1-x,x1-x2);
                        // std::cout<<"g = " << g <<std::endl;
                         b=lerp(bi,bf,x1-x,x1-x2);
                        // std::cout<<"b = " << b <<std::endl;
+                        r *=  zdiff;
+                        g *=  zdiff;
+                        b *=  zdiff;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
                     else{
                         y--;
                         //std::cout<<"8"<<std::endl;
-
+                        float z;
+                        if (z1 != z2){
+                            z = lerp(z1,z2,x1-x,x1-x2);
+                        }
+                        else{
+                            z = z1;
+                        }
+                        float zdiff = (1- (z/200));
                         r=lerp(ri,rf,x1-x,x1-x2);
                        // std::cout<<"r = " << r <<std::endl;
                         g=lerp(gi,gf,x1-x,x1-x2);
                        // std::cout<<"g = " << g <<std::endl;
                         b=lerp(bi,bf,x1-x,x1-x2);
                        // std::cout<<"b = " << b <<std::endl;
+                        r *=  zdiff;
+                        g *=  zdiff;
+                        b *=  zdiff;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
                 }
                 else{
                     error +=two_dy;
                     //std::cout<<"what4"<<std::endl;
-
+                    float z;
+                    if (z1 != z2){
+                        z = lerp(z1,z2,x1-x,x1-x2);
+                    }
+                    else{
+                        z = z1;
+                    }
+                    float zdiff = (1- (z/200));
                     r=lerp(ri,rf,x1-x,x1-x2);
                    // std::cout<<"r = " << r <<std::endl;
+
                     g=lerp(gi,gf,x1-x,x1-x2);
                    // std::cout<<"g = " << g <<std::endl;
                     b=lerp(bi,bf,x1-x,x1-x2);
                    // std::cout<<"b = " << b <<std::endl;
+                    r *=  zdiff;
+                    g *=  zdiff;
+                    b *=  zdiff;
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
                 drawable->setPixel(x, y,color);
@@ -742,118 +900,8 @@ void Client::draw_lineBres(int x1, int y1, int x2, int y2, unsigned int ri, unsi
     }
  }
 
-void Client::drawTriangleBres(const int x0, const int y0, const int x1, const int y1,const int x2, const int y2, unsigned int ri, unsigned int gi, unsigned int bi,unsigned int rf, unsigned int gf, unsigned int bf){
-    double m1 = float(y1 - y0) / float(x1 - x0);
-    double m2 = float(y2 - y0) / float(x2 - x0);
-    double b1 = y1 - (m1 *x1);
-    double b2 = y2 - (m2 *x2);
-
-    unsigned int r = ri;
-   // std::cout<<"ri = " <<r<< std::endl;
-    unsigned int g = gi;
-   // std::cout<<"gi = " <<gi<< std::endl;
-    unsigned int b = bi;
-   // std::cout<<"bi = " <<bi<< std::endl;
-    unsigned int color = (0xff << 24) + (r << 16) + (g << 8) + b;
-
-    if(x1 >= x0 && y1 >= y0 && x2 >= x0 && y2 >= y0){ //bottom right
-       if(x0 == x1 && x1 ==x2){
-          // std::cout<<"123"<<std::endl;
-            float mlinediag = float(y2 -y0)/float(x2-x0);
-            double bcoord = y2 - (mlinediag *x2);
-            for( int xdiag = x0; xdiag<=x2; xdiag++){
-                int ydiag = xdiag * mlinediag +bcoord;
-
-                r=lerp(ri,rf,xdiag,x2);
-                g=lerp(gi,gf,xdiag,x2);
-                b=lerp(bi,bf,xdiag,x2);
-                color = (0xff << 24) + (r << 16) + (g << 8) + b;
-
-                drawable->setPixel(xdiag,round(ydiag), color);
-                draw_lineBres(xdiag, ydiag, xdiag, y1, ri, gi, bi, rf, gf,bf);
-            }
-        }
-        else{
-           //std::cout<<"inloop"<<std::endl;
-            for (double xline1 = x0; xline1<x1; xline1++){
-
-                   for (double xline2 = x0; xline2<=x2; xline2++){
-
-                       r=lerp(ri,rf,xline2,x2);
-                       g=lerp(gi,gf,xline2,x2);
-                       b=lerp(bi,bf,xline2,x2);
-                       color = (0xff << 24) + (r << 16) + (g << 8) + b;
-
-                       double yline1 = m1*xline1 + b1;
-                      // drawable->setPixel(xline1, round(yline1),color);
-                       double yline2 = m2*xline2 + b2;
-                     //  drawable->setPixel(xline2, round(yline2),color);
-                      // std::cout<<"1"<<std::endl;
-                       draw_lineBres(xline1, round(yline1), xline2, round(yline2), ri, gi, bi, rf, gf,bf);
-                   }
-
-            }
-        }
-    }
-
-    if(x1 <= x0 && y1 >= y0 && x2 <= x0 && y2 >=y0){  // bottom left
-        for (double xline1 = x0; xline1>x1; xline1--){
-               for (double xline2 = x0; xline2>=x2; xline2--){
-
-                   r=lerp(ri,rf,x0-xline2,x2);
-                   g=lerp(gi,gf,x0-xline2,x2);
-                   b=lerp(bi,bf,x0-xline2,x2);
-                   color = (0xff << 24) + (r << 16) + (g << 8) + b;
-
-                   double yline1 = m1*xline1 + b1;
-                   drawable->setPixel(xline1, round(yline1),color);
-                   double yline2 = m2*xline2 + b2;
-                   drawable->setPixel(xline2, round(yline2),color);
-                   //std::cout<<"2"<<std::endl;
-                   draw_lineBres(xline1, round(yline1), xline2, round(yline2), ri, gi, bi, rf, gf,bf);
-               }
-
-        }
-    }
-    if(x1 <= x0 && y1 <= y0 && x2 <= x0 && y2 <= y0){
-        for (double yline1 = y0; yline1>y1; yline1--){ //top left
-            for (double yline2 = y0; yline2>=y2; yline2--){
-
-                r=lerp(ri,rf,y0-yline2,y2);
-                g=lerp(gi,gf,x0-yline2,y2);
-                b=lerp(bi,bf,x0-yline2,y2);
-                color = (0xff << 24) + (r << 16) + (g << 8) + b;
-
-                double xline1 = (yline1 - b1) / m1;
-                drawable->setPixel(round(xline1), yline1,color);
-                double xline2 = (yline2 - b2) / m2;
-                drawable->setPixel(round(xline2), yline2,color);
-                //std::cout<<"3"<<std::endl;
-                draw_lineBres(round(xline2), yline2, round(xline1), yline1,  ri, gi, bi, rf, gf,bf);
-            }
-         }
-    }
-
-    if(x1 >= x0 && y1 <= y0 && x2 >= x0 && y2 <= y0){
-        for (double yline1 = y0; yline1>y1; yline1--){ //top right
-            for (double yline2 = y0; yline2>=y2; yline2--){
-
-                r=lerp(ri,rf,y0-yline2,y2);
-                g=lerp(gi,gf,x0-yline2,y2);
-                b=lerp(bi,bf,x0-yline2,y2);
-                color = (0xff << 24) + (r << 16) + (g << 8) + b;
-
-                double xline1 = (yline1 - b1) / m1;
-                drawable->setPixel(round(xline1), yline1,color);
-                double xline2 = (yline2 - b2) / m2;
-                drawable->setPixel(round(xline2), yline2,color);
-               // std::cout<<"4"<<std::endl;
-                draw_lineBres(round(xline1), yline1, round(xline2), yline2,  ri, gi, bi, rf, gf,bf);
-            }
-         }
-    }
-}
-
+//old triangle drawer was here from my first attempt, it was giving me erros while compiling
+//so i just deleted it since i deleted it as it was unneeded.
 
 void Client::drawTriangleDDA(const int x0, const int y0, const int x1, const int y1,const int x2, const int y2, unsigned int color){
     double m1 = float(y1 - y0) / float(x1 - x0);
@@ -914,7 +962,7 @@ void Client::drawTriangleDDA(const int x0, const int y0, const int x1, const int
     }
 }
 
-void Client::drawTriangleBresVersion2( int x0,  int y0,  int x1,  int y1, int x2, int y2, unsigned int r0, unsigned int g0, unsigned int b0,unsigned int r1, unsigned int g1, unsigned int b1,unsigned int r2, unsigned int g2, unsigned int b2){
+void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1, int z1, int x2, int y2, int z2, unsigned int r0, unsigned int g0, unsigned int b0,unsigned int r1, unsigned int g1, unsigned int b1,unsigned int r2, unsigned int g2, unsigned int b2){
     //first sort triangle by increasing y values
 
     //begin sort
@@ -1020,7 +1068,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0,  int x1,  int y1, int x2
         float xline2 = x0;
 
         for (int y = y0; y<=y1; y++){
-            draw_lineBres(int(xline1), y, int(xline2), y, r0 , g0 , b0, r1, g1, b1);
+            draw_lineBres(int(xline1), y, z0, int(xline2), y, z1, r0 , g0 , b0, r1, g1, b1);
             xline1+=slope1;
             xline2+=slope2;
         }
@@ -1034,7 +1082,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0,  int x1,  int y1, int x2
         float xline2 = x2;
 
         for (int y = y2; y>y0; y--){
-            draw_lineBres(int(xline1), y, int(xline2), y,   r0 , g0 , b0, r2, g2, b2);
+            draw_lineBres(int(xline1), y, z0, int(xline2), y, z2,   r0 , g0 , b0, r2, g2, b2);
             xline1-=slope1;
             xline2-=slope2;
         }
@@ -1091,7 +1139,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0,  int x1,  int y1, int x2
             b1 += bdelta1;*/
 
 
-            draw_lineBres(int(xline1), y, int(xline2), y,  r0 , g0 , b0, r1, g1, b1);
+            draw_lineBres(int(xline1), y,z0, int(xline2), y,z1,  r0 , g0 , b0, r1, g1, b1);
             //draw_lineBres(int(xline1), y, int(xline2), y,  r0 , g0 , b0, r1, g1, b1);
             xline1+=slope1;
             xline2+=slope2;
@@ -1115,7 +1163,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0,  int x1,  int y1, int x2
             b2 += bdelta2;*/
 
            //draw_lineBres(int(xline1), y, int(xline2), y, r2 , g2 , b2, r1, g1, b1); //note i tried to use a third color but it looked horrible
-           draw_lineBres(int(xline1), y, int(xline2), y,  r0 , g0 , b0, r1, g1, b1);
+           draw_lineBres(int(xline1), y, z1, int(xline2), y, z1,  r0 , g0 , b0, r1, g1, b1);
 
             xline1-=slope1;
             xline2-=slope2;
@@ -1210,6 +1258,19 @@ void Client::rotate( char axis, int angle){
    delete[] color;
 }
 
+float* Client::CalculateFaceNormal(float x0, float y0, float z0, float x1, float y1, float z1,float x2, float y2, float z2, float normal[]){
+    float ux = x1 - x0;
+    float uy = y1 - y0;
+    float uz = z1 - z0;
+    float vx = x2 - x0;
+    float vy = y2 - y0;
+    float vz = z2 - z0;
+    normal[0] = (uy * vz) - (uz * vy); //perpendicular x, cross product of two edges of a polygon
+    normal[1] = (uz * vx) - (ux * vz); // y
+    normal[2] = (ux * vy) - (uy * vx); //z
+    return normal;
+
+}
 
 //STACK DEFINITION
 
