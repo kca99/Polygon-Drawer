@@ -617,7 +617,7 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
                             z = z1;
                         }
                         float zdiff = (1- (z/200));
-                        std::cout<<"z = " <<z<< std::endl;
+                       // std::cout<<"z = " <<z<< std::endl;
                         r=lerp(ri,rf,y-y1,y2-y1);
                         g=lerp(gi,gf,y-y1,y2-y1);
                         b=lerp(bi,bf,y-y1,y2-y1);
@@ -730,18 +730,18 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
                         else{
                             z = z1;
                         }
-                        std::cout<<"z = "<<z<<std::endl;
+                       // std::cout<<"z = "<<z<<std::endl;
                         float zdiff = (1- (z/200));
-                        std::cout<<"zdiff = "<<zdiff<<std::endl;
+                      //  std::cout<<"zdiff = "<<zdiff<<std::endl;
                         r=lerp(ri,rf,x-x1,x2-x1);
                         g=lerp(gi,gf,x-x1,x2-x1);
                         b=lerp(bi,bf,x-x1,x2-x1);
                         r *=  zdiff;
                         g *=  zdiff;
                         b *=  zdiff;
-                        std::cout<<"r = "<<r<<std::endl;
-                        std::cout<<"g = "<<g<<std::endl;
-                        std::cout<<"b = "<<b<<std::endl;
+                      //  std::cout<<"r = "<<r<<std::endl;
+                       // std::cout<<"g = "<<g<<std::endl;
+                      //  std::cout<<"b = "<<b<<std::endl;
                          color = (0xff << 24) + (r << 16) + (g << 8) + b;
 
                          //std::cout<<"color = " <<color<< std::endl;
@@ -968,6 +968,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
     //begin sort
     int temp_y;
     int temp_x;
+    int temp_z;
     unsigned int temp_r;
     unsigned int temp_g;
     unsigned int temp_b;
@@ -975,6 +976,10 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         temp_y = y2;
         y2=y0;
         y0=temp_y;
+
+        temp_z = z2;
+        z2=z0;
+        z0=temp_z;
 
         temp_x = x2;
         x2=x0;
@@ -998,6 +1003,10 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         y1=y0;
         y0=temp_y;
 
+        temp_z = z1;
+        z1=z0;
+        z0=temp_z;
+
         temp_x = x1;
         x1=x0;
         x0=temp_x;
@@ -1019,6 +1028,10 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         y2=y1;
         y1=temp_y;
 
+        temp_z = z1;
+        z2=z1;
+        z1=temp_z;
+
         temp_x= x2;
         x2=x1;
         x1=temp_x;
@@ -1036,9 +1049,10 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         b1=temp_b;
     }
 
-    //std::cout<< "y0 = " << y0 << ", x0 = " << x0 <<std::endl;
-    //std::cout<< "y1 = " << y1 << ", x1 = " << x1 << std::endl;
-    //std::cout<< "y2 = " << y2 << ", x2 = " << x2 << std::endl;
+    std::cout<< "x0 = " << x0 << ", y0 = " << y0 << ", z0 = " << z0 << ", r0 = " << r0 << ", g0 = " << g0 << ", b0 = " << b0 <<std::endl;
+    std::cout<< "x1 = " << x1 << ", y1 = " << y1 << ", z1 = " << z1 << ", r1 = " << r1 << ", g1 = " << g1 << ", b1 = " << b1 << std::endl;
+    std::cout<< "x2 = " << x2 << ", y2 = " << y2 << ", z1 = " << z2 << ", r2 = " << r2 << ", g2 = " << g2 << ", b2 = " << b2 << std::endl;
+
     //end sort
 
     /*float slope1 = float(x0-x1)/float(y0-y1);
@@ -1060,7 +1074,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
 
 
     if(y1 == y2){ //triangle is going down
-        //std::cout<<"1"<<std::endl;
+        std::cout<<"1"<<std::endl;
         float slope1 = float(x1-x0)/float(y1-y0);
         float slope2 = float(x2-x0)/float(y2-y0);
 
@@ -1068,13 +1082,26 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         float xline2 = x0;
 
         for (int y = y0; y<=y1; y++){
-            draw_lineBres(int(xline1), y, z0, int(xline2), y, z1, r0 , g0 , b0, r1, g1, b1);
+
+
+            unsigned int temp_r1=lerp(r0,r2,y-y0,y1-y0);
+            unsigned int temp_g1=lerp(g0,g2,y-y0,y1-y0);
+            unsigned int temp_b1=lerp(b0,b2,y-y0,y1-y0);
+
+            unsigned int temp_r2=lerp(r0,r1,y-y0,y1-y0);
+            unsigned int temp_g2=lerp(g0,g1,y-y0,y1-y0);
+            unsigned int temp_b2=lerp(b0,b1,y-y0,y1-y0);
+
+            unsigned int temp_z1 = lerp(z0,z2,y-y0,y1-y0);
+            unsigned int temp_z2 = lerp(z0,z1,y-y0,y1-y0);
+
+            draw_lineBres(int(xline1), y, temp_z1, int(xline2), y, temp_z2, temp_r1 , temp_g1 , temp_b1, temp_r2, temp_g2, temp_b2);
             xline1+=slope1;
             xline2+=slope2;
         }
     }
     else if(y0 == y1){ //triangle is going up
-        //std::cout<<"2"<<std::endl;
+        std::cout<<"2"<<std::endl;
         float slope1 = float(x2-x0)/float(y2-y0);
         float slope2 = float(x2-x1)/float(y2-y1);
 
@@ -1082,7 +1109,23 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         float xline2 = x2;
 
         for (int y = y2; y>y0; y--){
-            draw_lineBres(int(xline1), y, z0, int(xline2), y, z2,   r0 , g0 , b0, r2, g2, b2);
+
+
+            unsigned int temp_r1=lerp(r2,r1,y2-y,y2-y0);
+            unsigned int temp_g1=lerp(g2,g1,y2-y,y2-y0);
+            unsigned int temp_b1=lerp(b2,b1,y2-y,y2-y0);
+
+            unsigned int temp_r2=lerp(r2,r0,y2-y,y2-y0);
+            unsigned int temp_g2=lerp(g2,g0,y2-y,y2-y0);
+            unsigned int temp_b2=lerp(b2,b0,y2-y,y2-y0);
+
+            unsigned int temp_z1 = lerp(z2,z1,y2-y,y2-y0);
+            unsigned int temp_z2 = lerp(z2,z0,y2-y,y2-y0);
+
+           //std::cout<<"r1 = " << r1<<std::endl;
+            //std::cout<<"g1 = " << g1 <<std::endl;
+            //std::cout<<"b1 = " << b1 <<std::endl;
+            draw_lineBres(int(xline1), y, temp_z2, int(xline2), y, temp_z1,   temp_r2 , temp_g2 , temp_b2, temp_r1, temp_g1, temp_b1);
             xline1-=slope1;
             xline2-=slope2;
         }
