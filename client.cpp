@@ -31,11 +31,26 @@ void Client::nextPage() {
         drawable->updateScreen();   // you must call this to make the display change.
         break;
     case 2:
+    {
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(50,50,650,650,0xff000000);
-        //filledinmesh(50, 50,650, 650);
+        float trianglenorm[4];
+        drawTriangleBresVersion2(500,250,200,500,500,150, 250,600,50,0,255,0,255,0,0,0,0,255);
+        CalculateFaceNormal(500,250,200,500,500,150, 250,600,50, trianglenorm);
+        for(int i =0; i<3; i++){
+            std::cout<<trianglenorm[i] <<std::endl;
+        }
+        float centerx= (500+500+250)/3;
+        float centery= (250+500+600)/3;
+        float centerz= (200+150+50)/3;
+        draw_lineBres(trianglenorm[0], trianglenorm[1], 0,centerx , centery, centerz, 250, 0, 0,0,255,0);
+        draw_lineBres(50, 400, 0,centerx , centery, centerz, 255, 255, 0,255,255,0);
+        draw_lineBres(centerx, centery, centerz,400 , 50, 200, 255, 255, 0,255,255,0);
+
+         //filledinmesh(50, 50,650, 650);
         drawable->updateScreen();   // you must call this to make the display change.
         break;
+    }
     case 3:
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(50,50,650,650,0xff000000);
@@ -1055,24 +1070,6 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
 
     //end sort
 
-    /*float slope1 = float(x0-x1)/float(y0-y1);
-    float slope2 = float(x0-x2)/float(y0-y1);*/
-
-    /*float b1 = y0 - slope1 * x0;
-    float b2 = y0 - slope2 * x0;
-    float xline1 = ( y0 - b1 ) / slope1;
-    float xline2 = ( y0 - b2 ) / slope2;*/
-
-    /*float xline1 = x0;
-    float xline2 = x0;
-
-    for (int y = y0; y>y1; y--){
-        draw_lineBres(xline1, y, int(xline2), y, 0 , 0 , 255, 255, 0, 0);
-        xline1-=slope1;
-        xline2-=slope2;
-    }*/
-
-
     if(y1 == y2){ //triangle is going down
         std::cout<<"1"<<std::endl;
         float slope1 = float(x1-x0)/float(y1-y0);
@@ -1147,17 +1144,9 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         float bmidpoint = lerp(b0,b2,y1-y0,y2-y0);
 
         float zmidpoint = lerp(z0,z2,y1-y0,y2-y0);
-        std::cout<< "rmid point = " <<rmidpoint<< std::endl;
-        std::cout<< "gmid point = " <<gmidpoint<< std::endl;
-        std::cout<< "bmid point = " <<bmidpoint<< std::endl;
-
-       // r1 = r0; g1 = g0; b1=b0;
-       /* for (int y = y0; y<=y1; y++){ //bottom half
-
-            draw_lineBres(int(xline1), y,z0, int(xline2), y,z1,  r0 , g0 , b0, rdelta0, gdelta0, b1);
-            xline1+=slope1;
-            xline2+=slope2;
-        }*/
+       // std::cout<< "rmid point = " <<rmidpoint<< std::endl;
+       // std::cout<< "gmid point = " <<gmidpoint<< std::endl;
+       // std::cout<< "bmid point = " <<bmidpoint<< std::endl;
 
         for (int y = y0; y<=y1; y++){
 
@@ -1184,16 +1173,6 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         xline1 = x2;
         xline2 = x2;
 
-
-        /*for (int y = y2; y>=y1; y--){ //top half
-
-
-           //draw_lineBres(int(xline1), y, int(xline2), y, r2 , g2 , b2, r1, g1, b1); //note i tried to use a third color but it looked horrible
-           draw_lineBres(int(xline1), y, z1, int(xline2), y, z1,  r0 , g0 , b0, r1, g1, b1);
-
-            xline1-=slope1;
-            xline2-=slope2;
-        }*/
 
         for (int y = y2; y>y1; y--){
 
@@ -1258,6 +1237,7 @@ void Client::translate( float tx, float ty, float tz){
 
 void Client::rotate( char axis, int angle){
    double  temp_color;
+
    //std::cout<<"we in"  <<std::endl;
    double*  colorx =new double[422500];
    double*  colory =new double[422500];
@@ -1310,46 +1290,24 @@ float* Client::CalculateFaceNormal(float x0, float y0, float z0, float x1, float
     float ux = x1 - x0;
     float uy = y1 - y0;
     float uz = z1 - z0;
-    float vx = x2 - x0;
-    float vy = y2 - y0;
-    float vz = z2 - z0;
-    normal[0] = (uy * vz) - (uz * vy); //perpendicular x, cross product of two edges of a polygon
-    normal[1] = (uz * vx) - (ux * vz); // y
-    normal[2] = (ux * vy) - (uy * vx); //z
+
+    float vx = x2 - x1;
+    float vy = y2 - y1;
+    float vz = z2 - z1;
+
+    float xval = (uy * vz) - (uz * vy); //perpendicular x, cross product of two edges of a polygon
+    float yval = (uz * vx) - (ux * vz); // y
+    float zval = (ux * vy) - (uy * vx); //z
+
+    /*normal[0] = xval/(abs(xval)+abs(yval)+abs(zval));
+    normal[1] = yval/(abs(xval)+abs(yval)+abs(zval));
+    normal[2] = zval/(abs(xval)+abs(yval)+abs(zval));*/
+
+    float distance = sqrt(pow(xval,2.0) + pow(yval,2.0) +pow(zval,2.0));
+    normal[0] = xval/distance +50;
+    normal[1] = yval/distance +50;
+    normal[2] = zval/distance +50;
     return normal;
-
-}
-
-//STACK DEFINITION
-
-char_stack::char_stack(){
-  top_index = -1;
-  sizestack=0;
-}
-
-void char_stack::push( char item ){
-  top_index = top_index + 1;
-  sizestack = sizestack +1;
-  A[top_index] = item ;
-}
-
-char char_stack::pop(){
-  top_index = top_index - 1 ;
-  sizestack = sizestack -1;
-  return A[ top_index + 1 ];
-}
-
-char char_stack::top(){
-  return A[top_index];
-}
-
-
-bool char_stack::empty(){
-  return top_index == -1 ;
-}
-
-int char_stack::size(){
-    return sizestack;
 }
 
 
