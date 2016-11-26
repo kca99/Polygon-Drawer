@@ -47,6 +47,8 @@ void Client::nextPage() {
         draw_lineBres(50, 400, 0,centerx , centery, centerz, 255, 255, 0,255,255,0);
         draw_lineBres(centerx, centery, centerz,400 , 50, 200, 255, 255, 0,255,255,0);
 
+        //draw_lineBres(trianglenorm[0], trianglenorm[1], 0,250 , 600, 50, 250, 0, 0,0,255,0);
+        //float cosTheta = dot(trianglenorm[0], trianglenorm[1],trianglenorm[2], VECTOR A B C); //MAKE FUNCTION TO FIND UNIT VECTOR!
          //filledinmesh(50, 50,650, 650);
         drawable->updateScreen();   // you must call this to make the display change.
         break;
@@ -1304,10 +1306,14 @@ float* Client::CalculateFaceNormal(float x0, float y0, float z0, float x1, float
     normal[2] = zval/(abs(xval)+abs(yval)+abs(zval));*/
 
     float distance = sqrt(pow(xval,2.0) + pow(yval,2.0) +pow(zval,2.0));
-    normal[0] = xval/distance +50;
-    normal[1] = yval/distance +50;
-    normal[2] = zval/distance +50;
+    normal[0] = xval/distance;
+    normal[1] = yval/distance;
+    normal[2] = zval/distance;
     return normal;
 }
 
+float Client::dot(float x1, float y1, float z1, float x2, float y2, float z2){
+    float result = (x1 * x2) + (y1 * y2) + (z1*z2);
+    return result;
+}
 

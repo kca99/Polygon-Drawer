@@ -28,6 +28,9 @@ private:
     float* CalculateFaceNormal(float x0, float y0, float z0, float x1, float y1, float z1,float x2, float y2, float z2, float normal[]);
 
 
+    float dot(float x1, float y1, float z1, float x2, float y2, float z2);
+
+
 };
 
 class char_stack
