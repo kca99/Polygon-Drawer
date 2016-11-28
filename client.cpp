@@ -5,8 +5,7 @@
 #include <cstdlib>  //srand, rand
 #include <time.h>   //time(NULL) for random seed
 #include <string>   //getchar,getline
-#include <fstream> //fileopening
-#include <QTransform>
+#include <fstream> //fileopeninggo
 #include <cstring> //tokenize
 
 
@@ -27,14 +26,18 @@ void Client::nextPage() {
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(50,50,650,650,0xff000000);
         //wiremesh(50, 50,650, 650);
-        readsimp("testfile.simp"); //REMEMBER TO SET WORKING DIRECTORY TO CURRENT DIRECTORY!!
+        //readsimp("testfile.simp"); //REMEMBER TO SET WORKING DIRECTORY TO CURRENT DIRECTORY!!
+        drawTriangleBresVersion2(500,250,50, 500,500,200, 250,500,50, 0,255,0, 255,0,0,0,0,255);
         drawable->updateScreen();   // you must call this to make the display change.
         break;
     case 2:
     {
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(50,50,650,650,0xff000000);
-        float trianglenorm[4];
+        readsimp("testfile.simp");
+        rotate('x', 45);
+
+       /* float trianglenorm[4];
         drawTriangleBresVersion2(500,250,200,500,500,150, 250,600,50,0,255,0,255,0,0,0,0,255);
         CalculateFaceNormal(500,250,200,500,500,150, 250,600,50, trianglenorm);
         for(int i =0; i<3; i++){
@@ -46,7 +49,7 @@ void Client::nextPage() {
         draw_lineBres(trianglenorm[0], trianglenorm[1], 0,centerx , centery, centerz, 250, 0, 0,0,255,0);
         draw_lineBres(50, 400, 0,centerx , centery, centerz, 255, 255, 0,255,255,0);
         draw_lineBres(centerx, centery, centerz,400 , 50, 200, 255, 255, 0,255,255,0);
-
+        */
         //draw_lineBres(trianglenorm[0], trianglenorm[1], 0,250 , 600, 50, 250, 0, 0,0,255,0);
         //float cosTheta = dot(trianglenorm[0], trianglenorm[1],trianglenorm[2], VECTOR A B C); //MAKE FUNCTION TO FIND UNIT VECTOR!
          //filledinmesh(50, 50,650, 650);
@@ -572,10 +575,11 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
     unsigned int b = bi * zdiff;
    // std::cout<<"bi = " <<bi<< std::endl;
     unsigned int color = (0xff << 24) + (r << 16) + (g << 8) + b;
-    drawable->setPixel(x1, y1,color);
-
-
-
+    if(x1 >= 50){
+        if(y1>=50){
+            drawable->setPixel(x1, y1,color);
+        }
+    }
     if(t2>0){ //dx longer than dy
         if(y2>y1){ //octant 2
             for(int y=y1+1; y<y2; y++){
@@ -664,8 +668,11 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
 
-
-                drawable->setPixel(x, y,color);
+                if(x >=50){
+                    if(y >=50){
+                        drawable->setPixel(x, y,color);
+                    }
+                }
             }
         }
         else{ //dy<0 right octants
@@ -731,7 +738,11 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
                     b *=  zdiff;
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
-                drawable->setPixel(x, y,color);
+                if(x >=50){
+                    if(y >=50){
+                        drawable->setPixel(x, y,color);
+                    }
+                }
             }
         }
     }
@@ -836,7 +847,11 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
                     //std::cout<<"b = " <<b<< std::endl;
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
-                drawable->setPixel(x, y,color);
+                if(x >=50){
+                    if(y >=50){
+                        drawable->setPixel(x, y,color);
+                    }
+                }
             }
         }
         else{ //dy<0
@@ -911,7 +926,12 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
                     b *=  zdiff;
                     color = (0xff << 24) + (r << 16) + (g << 8) + b;
                 }
-                drawable->setPixel(x, y,color);
+
+                if(x >=50){
+                    if(y >=50){
+                        drawable->setPixel(x, y,color);
+                    }
+                }
             }
         }
     }
@@ -1083,16 +1103,16 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         for (int y = y0; y<=y1; y++){
 
 
-            unsigned int temp_r1=lerp(r0,r2,y-y0,y1-y0);
-            unsigned int temp_g1=lerp(g0,g2,y-y0,y1-y0);
-            unsigned int temp_b1=lerp(b0,b2,y-y0,y1-y0);
+            unsigned int temp_r1=lerp(r0,r1,y-y0,y1-y0);
+            unsigned int temp_g1=lerp(g0,g1,y-y0,y1-y0);
+            unsigned int temp_b1=lerp(b0,b1,y-y0,y1-y0);
 
-            unsigned int temp_r2=lerp(r0,r1,y-y0,y1-y0);
-            unsigned int temp_g2=lerp(g0,g1,y-y0,y1-y0);
-            unsigned int temp_b2=lerp(b0,b1,y-y0,y1-y0);
+            unsigned int temp_r2=lerp(r0,r2,y-y0,y1-y0);
+            unsigned int temp_g2=lerp(g0,g2,y-y0,y1-y0);
+            unsigned int temp_b2=lerp(b0,b2,y-y0,y1-y0);
 
-            unsigned int temp_z1 = lerp(z0,z2,y-y0,y1-y0);
-            unsigned int temp_z2 = lerp(z0,z1,y-y0,y1-y0);
+            unsigned int temp_z1 = lerp(z0,z1,y-y0,y1-y0);
+            unsigned int temp_z2 = lerp(z0,z2,y-y0,y1-y0);
 
             draw_lineBres(int(xline1), y, temp_z1, int(xline2), y, temp_z2, temp_r1 , temp_g1 , temp_b1, temp_r2, temp_g2, temp_b2);
             xline1+=slope1;
@@ -1107,7 +1127,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         float xline1 = x2;
         float xline2 = x2;
 
-        for (int y = y2; y>y0; y--){
+        for (int y = y2; y>=y0; y--){
 
 
             unsigned int temp_r1=lerp(r2,r1,y2-y,y2-y0);
@@ -1176,7 +1196,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
         xline2 = x2;
 
 
-        for (int y = y2; y>y1; y--){
+        for (int y = y2; y>=y1; y--){
 
 
             unsigned int temp_r1=lerp(r2,rmidpoint,y2-y,y2-y1);
@@ -1280,7 +1300,12 @@ void Client::rotate( char axis, int angle){
         //std::cout<<"Xcoord = " << xcoord <<std::endl;
         double ycoord = 350 + (colorx[j]-350)* sin(radians) + (colory[j]-350)*cos(radians);
        // std::cout<<"Ycoord = " << ycoord <<std::endl;
-       drawable->setPixel(xcoord,ycoord,color[j]);
+        if(xcoord >=50){
+            if(ycoord >=50){
+                drawable->setPixel(xcoord,ycoord,color[j]);
+            }
+        }
+
    }
 
    delete[] colorx;
