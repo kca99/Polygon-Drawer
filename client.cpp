@@ -35,7 +35,7 @@ void Client::nextPage() {
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(50,50,650,650,0xff000000);
         readsimp("testfile.simp");
-        rotate('x', 45);
+        //rotate('x', 45);
 
        /* float trianglenorm[4];
         drawTriangleBresVersion2(500,250,200,500,500,150, 250,600,50,0,255,0,255,0,0,0,0,255);
@@ -582,7 +582,7 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
     }
     if(t2>0){ //dx longer than dy
         if(y2>y1){ //octant 2
-            for(int y=y1+1; y<y2; y++){
+            for(int y=y1+1; y<=y2; y++){
                 if(x2 == x1){ //vertical line down
                     float z;
                     if (z1 != z2){
@@ -676,7 +676,7 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
             }
         }
         else{ //dy<0 right octants
-            for(int y=y1-1; y>y2; y--){
+            for(int y=y1-1; y>=y2; y--){
                 if (error <= 0){
                     error += t2;
                     if (x2>=x1){
@@ -748,7 +748,7 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
     }
     else{//t2<0 , dy is longer than dx
         if(x2>x1){ //octant 1
-            for( int x=x1+1; x<x2; x++){
+            for( int x=x1+1; x<=x2; x++){
                 if(y2 == y1){ //horizontal line across
                         //std::cout<<"here"<<std::endl;
                         float z;
@@ -855,7 +855,7 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
             }
         }
         else{ //dy<0
-            for( int x=x1-1; x>x2; x--){
+            for( int x=x1-1; x>=x2; x--){
                 if (error >= 0){
                     error += t2;
                     if (y2>=y1){
