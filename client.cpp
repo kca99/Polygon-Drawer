@@ -26,30 +26,33 @@ void Client::nextPage() {
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(50,50,650,650,0xff000000);
         //wiremesh(50, 50,650, 650);
-        //readsimp("testfile.simp"); //REMEMBER TO SET WORKING DIRECTORY TO CURRENT DIRECTORY!!
-        drawTriangleBresVersion2(500,250,50, 500,500,200, 250,500,50, 0,255,0, 255,0,0,0,0,255);
+        readsimp("testfile.simp"); //REMEMBER TO SET WORKING DIRECTORY TO CURRENT DIRECTORY!!
+        //drawTriangleBresVersion2(500,250,50, 500,500,200, 250,500,50, 0,255,0, 255,0,0,0,0,255);
         drawable->updateScreen();   // you must call this to make the display change.
         break;
     case 2:
     {
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(50,50,650,650,0xff000000);
-        readsimp("testfile.simp");
+        //readsimp("testfile.simp");
         //rotate('x', 45);
 
-       /* float trianglenorm[4];
-        drawTriangleBresVersion2(500,250,200,500,500,150, 250,600,50,0,255,0,255,0,0,0,0,255);
-        CalculateFaceNormal(500,250,200,500,500,150, 250,600,50, trianglenorm);
+        float trianglenorm[4];
+        drawTriangleBresVersion2(500,250,200, 500,500,0, 250,600,0,0,255,0,255,0,0,0,0,255);
+        //CalculateFaceNormal(500,250,200,500,500,0, 250,600,0, trianglenorm);
+
+
+        float centerx= (500+500+250)/3;
+        float centery= (250+500+600)/3;
+        float centerz= (200+0+0)/3;
+        normalize(centerx,centery,centerz, trianglenorm );
         for(int i =0; i<3; i++){
             std::cout<<trianglenorm[i] <<std::endl;
         }
-        float centerx= (500+500+250)/3;
-        float centery= (250+500+600)/3;
-        float centerz= (200+150+50)/3;
-        draw_lineBres(trianglenorm[0], trianglenorm[1], 0,centerx , centery, centerz, 250, 0, 0,0,255,0);
-        draw_lineBres(50, 400, 0,centerx , centery, centerz, 255, 255, 0,255,255,0);
-        draw_lineBres(centerx, centery, centerz,400 , 50, 200, 255, 255, 0,255,255,0);
-        */
+        draw_lineBres(centerx , centery, centerz, trianglenorm[0]*centerx, trianglenorm[1]*centery, trianglenorm[2]*centerz, 250, 0, 0,0,255,0);
+        //draw_lineBres(50, 400, 0,centerx , centery, centerz, 255, 255, 0,255,255,0);
+        //draw_lineBres(centerx, centery, centerz,400 , 50, 200, 255, 255, 0,255,255,0);
+
         //draw_lineBres(trianglenorm[0], trianglenorm[1], 0,250 , 600, 50, 250, 0, 0,0,255,0);
         //float cosTheta = dot(trianglenorm[0], trianglenorm[1],trianglenorm[2], VECTOR A B C); //MAKE FUNCTION TO FIND UNIT VECTOR!
          //filledinmesh(50, 50,650, 650);
@@ -1181,8 +1184,8 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
             unsigned int temp_g2=lerp(g0,gmidpoint,y-y0,y1-y0);
             unsigned int temp_b2=lerp(b0,bmidpoint,y-y0,y1-y0);
 
-            unsigned int temp_z1 = lerp(z0,zmidpoint,y-y0,y1-y0);
-            unsigned int temp_z2 = lerp(z0,z1,y-y0,y1-y0);
+            unsigned int temp_z1 = lerp(z0,z1,y-y0,y1-y0);
+            unsigned int temp_z2 = lerp(z0,zmidpoint,y-y0,y1-y0);
 
             draw_lineBres(int(xline1), y, temp_z1, int(xline2), y, temp_z2, temp_r1 , temp_g1 , temp_b1, temp_r2, temp_g2, temp_b2);
             xline1+=slope1;
@@ -1207,8 +1210,8 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
             unsigned int temp_g2=lerp(g2,g1,y2-y,y2-y1);
             unsigned int temp_b2=lerp(b2,b1,y2-y,y2-y1);
 
-            unsigned int temp_z1 = lerp(z2,z1,y2-y,y2-y1);
-            unsigned int temp_z2 = lerp(z2,zmidpoint,y2-y,y2-y1);
+            unsigned int temp_z1 = lerp(z2,zmidpoint,y2-y,y2-y1);
+            unsigned int temp_z2 = lerp(z2,z1,y2-y,y2-y1);
 
            //std::cout<<"r1 = " << r1<<std::endl;
             //std::cout<<"g1 = " << g1 <<std::endl;
@@ -1218,6 +1221,24 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
             xline2-=slope2;
         }
     }
+
+
+    float centerx= (x0+x1+x2)/3;
+    float centery= (y0+y1+y2)/3;
+    float centerz= (z0+z1+z2)/3;
+
+    if(centerx >=50){
+        if(centery >=50){
+            drawable->setPixel(centerx, centery,0xffffffff);
+            drawable->setPixel(centerx+1, centery,0xffffffff);
+            drawable->setPixel(centerx-1, centery,0xffffffff);
+            drawable->setPixel(centerx, centery+1,0xffffffff);
+            drawable->setPixel(centerx, centery-1,0xffffffff);
+
+        }
+    }
+
+
 }
 
 void Client::translate( float tx, float ty, float tz){
@@ -1239,8 +1260,12 @@ void Client::translate( float tx, float ty, float tz){
                //std::cout<<"colory[1] = "<<colory[1] <<std::endl;
                color[i]=temp_color;
                i++;
-               drawable->setPixel(x,y,0xff000000);
-            }
+               if(x >=50){
+                   if(y >=50){
+                       drawable->setPixel(x,y,0xff000000);
+                   }
+               }
+           }
        }
     }
    for (int j = 0; j<i+1; j++){
@@ -1250,7 +1275,13 @@ void Client::translate( float tx, float ty, float tz){
        unsigned int b = (color[j] & 255) * (1- (tz/200));
 
        unsigned int newcolor = (0xff << 24) + (r << 16) + (g << 8) + b;
-       drawable->setPixel(colorx[j]+tx,colory[j]+ty,newcolor);
+
+       if(colorx[j]+tx >=50){
+           if(colory[j]+ty >=50){
+               drawable->setPixel(colorx[j]+tx,colory[j]+ty,newcolor);
+           }
+       }
+
    }
    delete[] colorx;
    delete[] colory;
@@ -1314,7 +1345,7 @@ void Client::rotate( char axis, int angle){
 }
 
 float* Client::CalculateFaceNormal(float x0, float y0, float z0, float x1, float y1, float z1,float x2, float y2, float z2, float normal[]){
-    float ux = x1 - x0;
+   /* float ux = x1 - x0;
     float uy = y1 - y0;
     float uz = z1 - z0;
 
@@ -1324,16 +1355,24 @@ float* Client::CalculateFaceNormal(float x0, float y0, float z0, float x1, float
 
     float xval = (uy * vz) - (uz * vy); //perpendicular x, cross product of two edges of a polygon
     float yval = (uz * vx) - (ux * vz); // y
-    float zval = (ux * vy) - (uy * vx); //z
+    float zval = (ux * vy) - (uy * vx); //z*/
+
+    normalize((x1-x0) * (x2-x0),(y1-y0) * (y2-y0),(z1-z0) * (z2-z0), normal );
 
     /*normal[0] = xval/(abs(xval)+abs(yval)+abs(zval));
     normal[1] = yval/(abs(xval)+abs(yval)+abs(zval));
     normal[2] = zval/(abs(xval)+abs(yval)+abs(zval));*/
 
-    float distance = sqrt(pow(xval,2.0) + pow(yval,2.0) +pow(zval,2.0));
-    normal[0] = xval/distance;
-    normal[1] = yval/distance;
-    normal[2] = zval/distance;
+   /* float distance = sqrt(pow(xval,2.0) + pow(yval,2.0) +pow(zval,2.0));
+    std::cout <<distance <<std::endl;
+
+    float distance2 = sqrt((xval*xval)+(yval+yval)+(zval+zval));
+    std::cout <<distance2 <<std::endl;
+
+
+    normal[0] = xval/distance2;
+    normal[1] = yval/distance2;
+    normal[2] = zval/distance2;*/
     return normal;
 }
 
@@ -1342,3 +1381,15 @@ float Client::dot(float x1, float y1, float z1, float x2, float y2, float z2){
     return result;
 }
 
+float* Client::normalize(float x, float y, float z,float normal[] ){
+    float x2 = x*x;
+    float y2=y*y;
+    float z2=z*z;
+
+    float length = sqrt((x2+y2+z2));
+
+    normal[0] =x/length;
+    normal[1] =y/length;
+    normal[2] =z/length;
+    return normal;
+}
