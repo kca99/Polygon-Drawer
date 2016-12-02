@@ -125,34 +125,55 @@ void Client::readmesh(const char * filepath){
         return;
     }
     std::string line,floatline;
+
     int linecount = 0 ;
     //std::cout<<"before while loop" <<std::endl;
-    int rowmesh=0;
-    int columnmesh=0;
+    //std::cout<<"line[0] after declaring = "<<line[0] <<std::endl;
+    float rowmesh;
+    float columnmesh;
+    std::string s;
     std::cout<<"file was ok" <<std::endl;
-    std::cout<<"rowmesh = "<<rowmesh <<std::endl;
-    std::cout<<"columnmesh = "<<columnmesh <<std::endl;
+    //std::cout<<"rowmesh = "<<rowmesh <<std::endl;
+    //std::cout<<"columnmesh = "<<columnmesh <<std::endl;
     while (std::getline(meshfile,line)){
         //std::cout<<"in while loop" <<std::endl;
-        std::cout<<"linecount = "<<linecount <<std::endl;
-        std::cout<<"line[0] out of if = "<<line[0] <<std::endl;
+        //std::cout<<"linecount = "<<linecount <<std::endl;
+        //std::cout<<"line[0] out of if = "<<line[0] <<std::endl;
 
         if (linecount == 0){ //row count
-            std::cout<<"line[0] in if = "<<line[0] <<std::endl;
-
-            rowmesh =line[0];
-            std::cout<<"rowmesh = "<<rowmesh <<std::endl;
+            //std::cout<<"line[0] in if = "<<line[0] <<std::endl;
+            s =(&line)[0];
+            //std::cout<<"s = "<<s <<std::endl;
+            rowmesh = std::stof(s);
+            //std::cout<<"rowmesh = "<<rowmesh <<std::endl;
         }
         else if (linecount == 1){ //column count
-            columnmesh = line[0];
-            std::cout<<"columnmesh = "<<columnmesh <<std::endl;
+            s =(&line)[0];
+            columnmesh = std::stof(s);
+            //std::cout<<"columnmesh = "<<columnmesh <<std::endl;
         }
         else{ //every line after
 
-           /* float x = line[0];
-            float y = line[2];
-            float z = line[4];*/
-            //std::cout<< "(" << x << ", " << y << ", " << z << ")" <<std::endl;
+            char * cnewstring = new char[line.length()+1];
+            std::strcpy (cnewstring, line.c_str());
+            char *token = std::strtok(cnewstring, " ");
+            float x = atof(token);
+            float y,z;
+            int counter=1;
+            while (token != NULL) {
+               counter ++;
+               token = std::strtok(NULL, " ");
+
+               if (counter == 2){
+                   y = atof(token);
+               }
+               if (counter == 3){
+                   z = atof(token);
+               }
+            }
+
+            std::cout<< "(" << x << ", " << y << ", " << z << ")" <<std::endl;
+            //NOW WHAT??
         }
         linecount++;
     }
