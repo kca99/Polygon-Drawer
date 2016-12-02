@@ -64,8 +64,9 @@ void Client::nextPage() {
         draw_rect(50,50,650,650,0xff000000);
         //drawTriangleBresVersion2(350, 350, 350, 250, 250 ,250 , 255, 0, 0,255, 0, 0,255,0,0);
         //drawTriangleBresVersion2(350, 350, 250, 350, 250 ,250 ,0 , 255, 0,0, 255, 0,0,255,0);
-        draw_rect(350,350,400,400, 0xffff0000);
-        draw_rect(200,200,300,300, 0xffff0000);
+        //draw_rect(350,350,400,400, 0xffff0000);
+        //draw_rect(200,200,300,300, 0xffff0000);
+        readmesh("box");
         drawable->updateScreen();   // you must call this to make the display change.
         break;
     case 4:
@@ -112,6 +113,48 @@ void Client::nextPage() {
         draw_rect(0, 0, 750, 750, 0xffffffff);
         draw_rect(400, 400, 700, 700, 0xff00ff40);
         drawable->updateScreen();
+    }
+}
+
+void Client::readmesh(const char * filepath){
+    std::ifstream meshfile;
+    std::cout<<"created meshfile variable" <<std::endl;
+    meshfile.open(filepath, std::ifstream::in);
+    if (!meshfile){
+        std::cout<<"Error opening file." <<std::endl;
+        return;
+    }
+    std::string line,floatline;
+    int linecount = 0 ;
+    //std::cout<<"before while loop" <<std::endl;
+    int rowmesh=0;
+    int columnmesh=0;
+    std::cout<<"file was ok" <<std::endl;
+    std::cout<<"rowmesh = "<<rowmesh <<std::endl;
+    std::cout<<"columnmesh = "<<columnmesh <<std::endl;
+    while (std::getline(meshfile,line)){
+        //std::cout<<"in while loop" <<std::endl;
+        std::cout<<"linecount = "<<linecount <<std::endl;
+        std::cout<<"line[0] out of if = "<<line[0] <<std::endl;
+
+        if (linecount == 0){ //row count
+            std::cout<<"line[0] in if = "<<line[0] <<std::endl;
+
+            rowmesh =line[0];
+            std::cout<<"rowmesh = "<<rowmesh <<std::endl;
+        }
+        else if (linecount == 1){ //column count
+            columnmesh = line[0];
+            std::cout<<"columnmesh = "<<columnmesh <<std::endl;
+        }
+        else{ //every line after
+
+           /* float x = line[0];
+            float y = line[2];
+            float z = line[4];*/
+            //std::cout<< "(" << x << ", " << y << ", " << z << ")" <<std::endl;
+        }
+        linecount++;
     }
 }
 

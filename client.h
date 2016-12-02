@@ -14,6 +14,7 @@ public:
 private:
     Drawable *drawable;
     void readsimp(const char * filepath);
+    void readmesh(const char * filepath);
     int lerp(int color1, int color2, int currentvalue, int finalvalue);
     void drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1, int z1, int x2, int y2, int z2, unsigned int r0, unsigned int g0, unsigned int b0,unsigned int r1, unsigned int g1, unsigned int b1,unsigned int r2, unsigned int g2, unsigned int b2);
     void wiremesh(const int p1x, const int p1y, const int p2x, const int p2y);
