@@ -139,15 +139,17 @@ void Client::readmesh(const char * filepath){
         //std::cout<<"in while loop" <<std::endl;
         //std::cout<<"linecount = "<<linecount <<std::endl;
         //std::cout<<"line[0] out of if = "<<line[0] <<std::endl;
+        if (linecount == 0){ //color
 
-        if (linecount == 0){ //row count
+        }
+        if (linecount == 1){ //row count
             //std::cout<<"line[0] in if = "<<line[0] <<std::endl;
             s =(&line)[0];
             //std::cout<<"s = "<<s <<std::endl;
             rowmesh = std::stof(s);
             //std::cout<<"rowmesh = "<<rowmesh <<std::endl;
         }
-        else if (linecount == 1){ //column count
+        else if (linecount == 2){ //column count
             s =(&line)[0];
             columnmesh = std::stof(s);
             //std::cout<<"columnmesh = "<<columnmesh <<std::endl;
@@ -213,6 +215,9 @@ void Client::readsimp(const char * filepath){
         std::size_t findPhongstring = line.find("phong");
         std::size_t findGouraudstring = line.find("gouraud");
         std::size_t findFlatstring = line.find("flat");
+
+        std::size_t findRotatestring = line.find("rotate");
+        std::size_t findTranslatestring = line.find("translate");
         //=======================END DETECTION=======================//
 
         if (findCamerastring !=std::string::npos){
@@ -369,6 +374,48 @@ void Client::readsimp(const char * filepath){
         }
         if (findFlatstring !=std::string::npos){
             //set rendering style to flat
+        }
+        if (findRotatestring !=std::string::npos){
+            //rotate
+            char axis;
+            float angle;
+            std::string newstring=line.substr(findLinestring+9,linecount);
+            //std::cout<< newstring <<std::endl;
+            char * cnewstring = new char[newstring.length()+1];
+            std::strcpy (cnewstring, newstring.c_str());
+            char *token = std::strtok(cnewstring, " ");
+            axis = token[0];
+            //std::cout << axis <<std::endl;
+            while (token != NULL) {
+                token = std::strtok(NULL, " ");
+                angle = atof(token);
+                break;
+            }
+            //std::cout <<angle <<std::endl;
+            rotate( axis, angle);
+        }
+        if (findTranslatestring !=std::string::npos){
+            //translate
+            float tx,ty,tz;
+            std::string newstring=line.substr(findLinestring+11,linecount);
+            //std::cout<< newstring <<std::endl;
+            char * cnewstring = new char[newstring.length()+1];
+            std::strcpy (cnewstring, newstring.c_str());
+            char *token = std::strtok(cnewstring, " ");
+            tx = atof(token);
+            int counter = 0;
+            while (token != NULL) {
+                counter++;
+                token = std::strtok(NULL, " ");
+                if (counter == 1){
+                    ty= atof(token);
+                }
+                if (counter == 2){
+                    tz = atof(token);
+                }
+            }
+            std::cout <<tx << " " << ty << " " << tz <<std::endl;
+            translate(tx,ty,tz);
         }
     }
 }
@@ -1366,7 +1413,7 @@ void Client::rotate( char axis, int angle){
        for(int x = 50; x< 650; x++){
            temp_color = drawable->getPixel(x, y);
            //std::cout<<"temp_color = "<<temp_color <<std::endl;
-           if(temp_color != 0xff000000){//pixel isnt black, we translate
+           if(temp_color != 0xff000000){
                colorx[i]= x;
                //std::cout<<"colorx[1] = "<<colorx[1] <<std::endl;
                colory[i]= y;
@@ -1400,9 +1447,7 @@ void Client::rotate( char axis, int angle){
                 drawable->setPixel(xcoord,ycoord,color[j]);
             }
         }
-
    }
-
    delete[] colorx;
    delete[] colory;
    delete[] color;
