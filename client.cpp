@@ -8,6 +8,7 @@
 #include <fstream> //fileopeninggo
 #include <cstring> //tokenize
 
+//CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
 
 Client::Client(Drawable *drawable)
 {
@@ -117,6 +118,8 @@ void Client::nextPage() {
 }
 
 void Client::readmesh(const char * filepath){
+    //CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
+
     std::ifstream meshfile;
     std::cout<<"created meshfile variable" <<std::endl;
     meshfile.open(filepath, std::ifstream::in);
@@ -180,7 +183,7 @@ void Client::readmesh(const char * filepath){
         linecount++;
     }
 }
-
+//CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
 void Client::readsimp(const char * filepath){
     //int token;
     //std::cout<<filepath <<std::endl;
@@ -282,7 +285,7 @@ void Client::readsimp(const char * filepath){
             //std::cout<<x2 << " " << y2 << " " << z2 << " " << r2 << " " << g2 << " " << b2 <<std::endl;
             draw_lineBres(x1,y1,z1, x2,y2,z2,r1,g1,b1,r2,g2, b2);
         }
-
+        //CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
         if (findPolygonstring != std::string::npos){
             //find Polygon values
             float x0, y0, z0, r0,g0,b0;
@@ -419,7 +422,7 @@ void Client::readsimp(const char * filepath){
         }
     }
 }
-
+//CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
 int Client::lerp(int color1, int color2, int currentvalue, int finalvalue)
 {
     float currentvaluefloat = currentvalue;
@@ -741,6 +744,7 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
                         b *=  zdiff;
                         color = (0xff << 24) + (r << 16) + (g << 8) + b;
                     }
+                    //CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
                     else{
                         x--;
                         //std::cout<<"2"<<std::endl;
@@ -1050,6 +1054,7 @@ void Client::draw_lineBres(int x1, int y1, int z1, int x2, int y2, int z2, unsig
         }
     }
  }
+//CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
 
 //old triangle drawer was here from my first attempt, it was giving me erros while compiling
 //so i just deleted it since i deleted it as it was unneeded.
@@ -1112,7 +1117,7 @@ void Client::drawTriangleDDA(const int x0, const int y0, const int x1, const int
          }
     }
 }
-
+//CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
 void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1, int z1, int x2, int y2, int z2, unsigned int r0, unsigned int g0, unsigned int b0,unsigned int r1, unsigned int g1, unsigned int b1,unsigned int r2, unsigned int g2, unsigned int b2){
     //first sort triangle by increasing y values
 
@@ -1351,7 +1356,7 @@ void Client::drawTriangleBresVersion2( int x0,  int y0, int z0,  int x1,  int y1
 
 
 }
-
+//CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
 void Client::translate( float tx, float ty, float tz){
    std::cout<<"we in1"  <<std::endl;
    unsigned int  temp_color;
@@ -1489,7 +1494,7 @@ float Client::dot(float x1, float y1, float z1, float x2, float y2, float z2){
     float result = (x1 * x2) + (y1 * y2) + (z1*z2);
     return result;
 }
-
+//CMPT361 Assignment 3 Kevin Chung kca99@sfu.ca
 float* Client::normalize(float x, float y, float z,float normal[] ){
     float x2 = x*x;
     float y2=y*y;
